@@ -11,7 +11,7 @@ const [prefix, frames, scale = "0.5", id = "BridgeShort"] = process.argv.slice(2
 if (!prefix || !frames) { console.log("usage: node scripts/bridge-stills.mjs <outPrefix> <frame,frame,...> [scale] [compositionId]"); process.exit(1); }
 fs.mkdirSync(path.dirname(path.resolve(prefix + "x")), { recursive: true });
 const browserExecutable = process.env.CHROME || null;
-const chromiumOptions = { gl: "angle" };
+const chromiumOptions = { gl: process.env.REMOTION_GL || "angle" }; // REMOTION_GL=swangle on machines without a GPU
 const serveUrl = await bundle({ entryPoint: path.resolve(process.env.BRIDGE_ENTRY || "src/index.ts"), publicDir: path.resolve("public") });
 const composition = await selectComposition({ serveUrl, id, browserExecutable, chromiumOptions });
 const onBrowserLog = (l) => { if (l.type === "error" || l.type === "warning") console.log(`[${l.type}]`, l.text.slice(0, 300)); };
